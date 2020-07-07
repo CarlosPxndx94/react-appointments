@@ -1,10 +1,10 @@
 import React, { Fragment, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import PropTypes from 'prop-types';
 
 const Appointment = ({ addAppointment }) => {
 
     const [appointment, setAppointment] = useState({
-        id: '',
         petName: '',
         ownerName: '',
         date: '',
@@ -44,10 +44,7 @@ const Appointment = ({ addAppointment }) => {
         setValidateForm(false);
 
         //Assign id
-        setAppointment({
-            ...appointment,
-            id: uuidv4()
-        });
+        appointment.id = uuidv4();
 
         //Regiter Appointment
         addAppointment(appointment);
@@ -138,6 +135,10 @@ const Appointment = ({ addAppointment }) => {
             </form>
         </Fragment>
     );
+}
+
+Appointment.proType = {
+    addAppointment: PropTypes.func.isRequired
 }
 
 export default Appointment;

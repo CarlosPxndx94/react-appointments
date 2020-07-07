@@ -1,11 +1,22 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import Appointment from './components/Appointment';
 import Appointments from './components/Appointments';
 
 function App() {
 
+
+  //initial appointments
+  let initialAppointments = JSON.parse(localStorage.getItem('appointments'));
+  if (!initialAppointments) {
+    initialAppointments = [];
+  }
   //Lis Appointment
-  const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState(initialAppointments);
+
+  //useEffect change appointments
+  useEffect(() => {
+    localStorage.setItem('appointments', JSON.stringify((initialAppointments ? appointments : [])));
+  }, [appointments, initialAppointments]);
 
   //Function add appointments
   const handlerAddAppointment = appointment => {
@@ -14,6 +25,15 @@ function App() {
       appointment
     ]);
   };
+
+  //Function remove appointment by id
+  const removeAppointment = id => {
+    const newAppointments = appointments.filter(ap => ap.id !== id);
+    setAppointments(newAppointments);
+  }
+
+  //Title
+  const title = (appointments.length > 0 ? 'Manage your Appointments' : 'Add one appointment');
 
   return (
     <Fragment>
@@ -25,11 +45,12 @@ function App() {
               addAppointment={handlerAddAppointment} />
           </div>
           <div className="one-half column">
-            <h2>Manage your Appointments</h2>
+            <h2>{title}</h2>
             {appointments.map(appointment => (
               <Appointments
                 key={appointment.id}
                 appointment={appointment}
+                removeAppointment={removeAppointment}
               />
             ))}
           </div>
